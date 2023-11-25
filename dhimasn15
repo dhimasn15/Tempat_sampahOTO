@@ -1,0 +1,43 @@
+#include <Servo.h>
+
+Servo myServo;  // Objek Servo
+const int triggerPin = 10;  // Pin trigger sensor HC-SR04
+const int echoPin = 11;     // Pin echo sensor HC-SR04
+
+void setup() {
+  myServo.attach(9);  // Servo terhubung ke pin 9
+  pinMode(triggerPin, OUTPUT);
+  pinMode(echoPin, INPUT);
+  Serial.begin(9600);
+}
+
+void loop() {
+  // Mengukur jarak menggunakan sensor HC-SR04
+  digitalWrite(triggerPin, LOW);
+  delayMicroseconds(2);
+  digitalWrite(triggerPin, HIGH);
+  delayMicroseconds(10);
+  digitalWrite(triggerPin, LOW);
+  long duration = pulseIn(echoPin, HIGH);
+  int distance = duration * 0.034 / 2;
+
+  // Jika sensor mendeteksi objek
+  if (distance < 10) {
+    // Gerakkan servo sebesar 3 derajat
+    myServo.write(10);
+    delay(1000);
+
+    // Hentikan servo selama 3 detik
+    myServo.write(90);
+    delay(3000);
+
+    // Kembalikan servo ke posisi awal
+    myServo.write(170);
+    delay(1000);
+  } else {
+    // Jika tidak ada objek, hentikan servo
+    myServo.write(90);
+    delay(50);  // Tambahkan delay kecil untuk stabilitas
+  }
+}
+
